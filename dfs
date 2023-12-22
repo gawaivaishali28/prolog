@@ -1,0 +1,57 @@
+def dfs(current, visited, jug1_cap, jug2_cap, target):
+    jug1, jug2 = current
+
+    if jug1 == target or jug2 == target:
+        return True
+
+    visited.add(current)
+    
+    # Empty jug1
+    if (0, jug2) not in visited:
+        if dfs((0, jug2), visited, jug1_cap, jug2_cap, target):
+            return True
+    
+    # Empty jug2
+    if (jug1, 0) not in visited:
+        if dfs((jug1, 0), visited, jug1_cap, jug2_cap, target):
+            return True
+    
+    # Fill jug1
+    if (jug1_cap, jug2) not in visited:
+        if dfs((jug1_cap, jug2), visited, jug1_cap, jug2_cap, target):
+            return True
+    
+    # Fill jug2
+    if (jug1, jug2_cap) not in visited:
+        if dfs((jug1, jug2_cap), visited, jug1_cap, jug2_cap, target):
+            return True
+    
+    # Pour from jug1 to jug2
+    pour_amount = min(jug1, jug2_cap - jug2)
+    if (jug1 - pour_amount, jug2 + pour_amount) not in visited:
+        if dfs((jug1 - pour_amount, jug2 + pour_amount), visited, jug1_cap, jug2_cap, target):
+            return True
+    
+    # Pour from jug2 to jug1
+    pour_amount = min(jug2, jug1_cap - jug1)
+    if (jug1 + pour_amount, jug2 - pour_amount) not in visited:
+        if dfs((jug1 + pour_amount, jug2 - pour_amount), visited, jug1_cap, jug2_cap, target):
+            return True
+    
+    return False
+
+def water_jug_dfs(jug1_cap, jug2_cap, target):
+    start_state = (0, 0)
+    visited = set()
+    
+    if dfs(start_state, visited, jug1_cap, jug2_cap, target):
+        print(f"It's possible to measure {target} units of water.")
+    else:
+        print(f"It's not possible to measure {target} units of water.")
+
+# Example usage:
+jug1_capacity = 4
+jug2_capacity = 3
+target_amount = 2
+
+water_jug_dfs(jug1_capacity, jug2_capacity, target_amount)
