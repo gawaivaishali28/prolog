@@ -1,0 +1,56 @@
+# Simple grid representing the environment
+grid = [
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 0, 0],
+    [0, 0, 1, 0, 1],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0]
+]
+
+# Define robot's start and goal positions
+start = (0, 0)
+goal = (4, 4)
+
+def move_robot(curr_pos, target_pos):
+    curr_x, curr_y = curr_pos
+    target_x, target_y = target_pos
+
+    if curr_pos == target_pos:
+        return "Reached goal"
+
+    # Move horizontally
+    if curr_x < target_x and grid[curr_x + 1][curr_y] == 0:
+        return "Move down"
+    elif curr_x > target_x and grid[curr_x - 1][curr_y] == 0:
+        return "Move up"
+
+    # Move vertically
+    if curr_y < target_y and grid[curr_x][curr_y + 1] == 0:
+        return "Move right"
+    elif curr_y > target_y and grid[curr_x][curr_y - 1] == 0:
+        return "Move left"
+
+    return "Stuck"
+
+# Robot traversal using means-ends analysis
+current_position = start
+while True:
+    action = move_robot(current_position, goal)
+    print(f"Current Position: {current_position}, Action: {action}")
+
+    if action == "Reached goal":
+        break
+
+    # Update current position based on the action
+    if action == "Move down":
+        current_position = (current_position[0] + 1, current_position[1])
+    elif action == "Move up":
+        current_position = (current_position[0] - 1, current_position[1])
+    elif action == "Move right":
+        current_position = (current_position[0], current_position[1] + 1)
+    elif action == "Move left":
+        current_position = (current_position[0], current_position[1] - 1)
+
+    if action == "Stuck":
+        print("Cannot move further. Goal unreachable.")
+        break
