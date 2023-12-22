@@ -1,0 +1,53 @@
+from collections import deque
+
+def get_neighbors(state):
+    moves = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Possible moves: right, down, left, up
+    empty_row, empty_col = next((i, row.index(0)) for i, row in enumerate(state) if 0 in row)
+
+    neighbors = []
+    for move in moves:
+        new_row, new_col = empty_row + move[0], empty_col + move[1]
+        if 0 <= new_row < len(state) and 0 <= new_col < len(state[0]):
+            new_state = [row[:] for row in state]
+            new_state[empty_row][empty_col], new_state[new_row][new_col] = new_state[new_row][new_col], 0
+            neighbors.append(new_state)
+
+    return neighbors
+
+def bfs(start_state, goal_state):
+    visited = set()
+    queue = deque([(start_state, 0, None)])
+
+    while queue:
+        current_state, moves, previous = queue.popleft()
+
+        if current_state == goal_state:
+            return current_state, moves
+
+        visited.add(str(current_state))
+        for neighbor in get_neighbors(current_state):
+            if str(neighbor) not in visited:
+                queue.append((neighbor, moves + 1, current_state))
+
+    return None, None
+
+def print_solution(solution):
+    if solution[0] is None:
+        print("No solution exists.")
+        return
+
+    state, moves = solution
+    while state:
+        for row in state:
+            print(' '.join(map(str, row)))
+            print()
+        state = state[-1]
+        print()
+        moves -= 1
+
+# Define the start and goal states
+start_board = [[1, 2, 3], [0, 4, 6], [7, 5, 8]]
+goal_board = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
+
+solution = bfs(start_board, goal_board)
+print_solution(solution)
