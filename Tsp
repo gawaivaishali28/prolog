@@ -1,0 +1,28 @@
+import itertools
+
+def calculate_distance(coords, order):
+    distance = 0
+    num_cities = len(order)
+    for i in range(num_cities - 1):
+        start_city = order[i]
+        end_city = order[i + 1]
+        distance += ((coords[end_city][0] - coords[start_city][0])**2 + 
+                     (coords[end_city][1] - coords[start_city][1])**2) ** 0.5
+    return distance
+
+def traveling_salesman_brute_force(coords):
+    cities = list(coords.keys())
+    min_distance = float('inf')
+    min_path = None
+    for path in itertools.permutations(cities):
+        distance = calculate_distance(coords, path)
+        if distance < min_distance:
+            min_distance = distance
+            min_path = path
+    return min_path, min_distance
+
+# Example usage:
+coordinates = {'A': (0, 0), 'B': (1, 3), 'C': (2, 5), 'D': (5, 2)}
+best_path, shortest_distance = traveling_salesman_brute_force(coordinates)
+print("Shortest Path:", best_path)
+print("Shortest Distance:", shortest_distance)
